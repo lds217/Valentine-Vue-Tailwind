@@ -4,6 +4,7 @@
   import PlacesMap from '/src/components/utils/PlacesMap.vue'
   import SideNav from '/src/components/utils/SideNav.vue'
   import Timeline from '/src/components/utils/Timeline.vue'
+  import backgroundImage from '@/assets/img/3.jpg'
   const days = ref(0);
   const hours = ref(0);
   const minutes = ref(0);
@@ -18,7 +19,7 @@
   
   // List of audio app
   const tracks = [
-    "src/assets/audio/Spring_Snow.mp3",
+    "@/assets/audio/Spring_Snow.mp3",
   ];
 
   // Play/Pause control
@@ -165,7 +166,7 @@ const animateDays = () => {
       
       class="min-h-screen items-center justify-center bg-gradient-to-r from-pink-300 to-red-400 text-white flex flex-col "
     >
-      <div class="absolute inset-0 bg-cover bg-center opacity-20" style="background-image: url('src/assets/img/3.jpg');"></div>
+      <div class="absolute inset-0 bg-cover bg-center opacity-20" :style="{ backgroundImage: `url(${backgroundImage})` }"></div>
       <div class="w-full text-center my-8">
         <h2 data-section  class="text-4xl font-bold transform opacity-0  translate-y-10 transition-all duration-700 ease-out">💕 We've been together for 💕</h2>
       </div>
