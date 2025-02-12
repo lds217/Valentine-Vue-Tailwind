@@ -11,7 +11,17 @@ const defaultCenter = [10.7769, 106.7009];
 const defaultZoom = 6;
 
 import image1 from '@/assets/img/1.jpg';
-
+import image3 from '@/assets/img/3.jpg';
+import imagelc from '@/assets/img/lechanh.jpg';
+import imagedh from '@/assets/img/476652975_1174836937652568_3112467058036108876_n.jpg';
+import imageap from '@/assets/img/479539952_594429530250078_534417895570324619_n.jpg';
+import imagegm from '@/assets/img/476956585_1698003264089046_8660041013912407340_n.jpg';
+import imageda from '@/assets/img/476382094_1541203859876448_3379473860663129146_n.jpg';
+import imagecb from '@/assets/img/476569010_9939648159398439_4803802204045569230_n.jpg';
+import imagede from '@/assets/img/476615258_1009570827716654_559313607907641415_n.jpg';
+import imageindy from '@/assets/img/476584319_622774403843085_4236416919287758156_n.jpg';
+import bc from '@/assets/img/7c93327b-53b2-4ef2-be1b-c1a5ddf7ff3b.jpg';
+import minne from '@/assets/img/476328477_890452289692416_753768545952614398_n.jpg';
 
 const regions = {
   southVietnam: {
@@ -41,60 +51,44 @@ const vietnamPlaces = [
   {
     name: 'Ho Chi Minh City',
     coordinates: [10.7769, 106.7009],
-    description: 'Where our story began. The bustling metropolis of Southern Vietnam.',
-    image: image1,
-    date: 'January 2024'
+    image: image3,
   },
 
   {
     name: 'Le Chanh Village',
     coordinates: [10.735306, 105.167250],
-    description: 'Beautiful coastal city where we watched the sunset together.',
-    image: 'https://source.unsplash.com/400x300/?vung-tau',
-    date: 'March 2024'
+    image: imagelc,
   },
   {
     name: 'Duc Hoa Village',
     coordinates: [10.8237, 106.457239],
-    description: 'The city of eternal spring, where we enjoyed the cool weather and beautiful flowers.',
-    image: 'https://source.unsplash.com/400x300/?dalat',
-    date: 'May 2024'
+    image: imagedh,
   },
   {
     name: 'Giga Mall',
     coordinates: [10.82755, 106.72178],
-    description: 'The paradise island where we enjoyed the sun and sea.',
-    image: 'https://source.unsplash.com/400x300/?phu-quoc',
-    date: 'July 2024'
-  },
-  {
-    name: 'Glamping',
-    coordinates: [10.867987, 106.84186],
-    description: 'The bustling market where we enjoyed shopping and local food.',
-    image: 'https://source.unsplash.com/400x300/?ben-thanh-market',
-    date: 'September 2024'
+    image: imagegm,
   },
   {
     name: 'Di An District',
     coordinates: [10.920968, 106.7796],
-    description: 'The bustling market where we enjoyed shopping and local food.',
-    image: 'https://source.unsplash.com/400x300/?ben-thanh-market',
-    date: 'November 2024'
+    image: imageda,
   },
   {
     name: 'Ben Cat City',
     coordinates: [11.1304262, 106.62300],
-    description: 'The bustling market where we enjoyed shopping and local food.',
-    image: 'https://source.unsplash.com/400x300/?ben-thanh-market',
-    date: 'November 2024'
+    image: bc,
   },
   {
     name: 'Phan Dien Village',
     coordinates: [11.29774849, 108.517254],
-    description: 'The bustling market where we enjoyed shopping and local food.',
-    image: 'https://source.unsplash.com/400x300/?ben-thanh-market',
-    date: 'November 2024'
+    image: image1,
   },
+  {
+    name: 'Tan Son Nhat Airport',
+    coordinates: [10.816535124487752, 106.66432097904577],
+    image: imageap,
+  }
 ];
 
 // US locations
@@ -102,30 +96,22 @@ const usPlaces = [
   {
     name: 'Minneapolis, Minnesota',
     coordinates: [45.167787, -93.2117390],
-    description: 'The vibrant Twin Cities with beautiful lakes.',
-    image: 'https://source.unsplash.com/400x300/?minneapolis',
-    date: 'April 2024'
+    image: minne,
   },
   {
     name: 'Purdue Indianapolis',
     coordinates: [39.77414, -86.172488],
-    description: 'The crossroads of America.',
-    image: 'https://source.unsplash.com/400x300/?indianapolis',
-    date: 'May 2024'
+    image: imageindy,
   },
   {
     name: 'Columbus, Ohio',
     coordinates: [39.965158, -83.0069],
-    description: 'The heart of it all.',
-    image: 'https://source.unsplash.com/400x300/?columbus-ohio',
-    date: 'June 2024'
+    image: imagecb,
   },
   {
     name: 'Denision University',
     coordinates: [40.367474, -82.774856],
-    description: 'The beautiful campus in Ohio.',
-    image: 'https://source.unsplash.com/400x300/?denison-university',
-    date: 'June 2024'
+    image: imagede,
   }
 ];
 
@@ -336,8 +322,6 @@ onMounted(() => {
           <img :src="modalContent.image" 
                :alt="modalContent.name"
                class="w-full h-48 object-cover rounded-lg shadow-md">
-          <p class="mt-4 text-gray-700">{{ modalContent.description }}</p>
-          <p class="mt-2 text-sm text-pink-500">Visited: {{ modalContent.date }}</p>
           <button @click="closeModal" 
                   class="mt-4 bg-pink-500 text-white px-4 py-2 rounded-lg w-full hover:bg-pink-600 transition-colors">
             Close

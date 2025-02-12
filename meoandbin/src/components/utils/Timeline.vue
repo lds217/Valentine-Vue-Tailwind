@@ -2,7 +2,7 @@
 <template>
   <section data-section class="h-screen flex flex-col items-center justify-center p-6 bg-pink-200 relative overflow-hidden">
     <div class="absolute inset-0 bg-cover bg-center opacity-20 bg-no-repeat z-0" 
-         style="background-image: url('src/assets/img/3.jpg'); transform: translate3d(0, 0, 0);">
+         style="background-image: url('src/assets/img/bg11.jpg'); transform: translate3d(0, 0, 0);">
     </div>
     
     <!-- Container to limit width and center content -->

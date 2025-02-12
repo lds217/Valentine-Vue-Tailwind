@@ -77,24 +77,40 @@ const animateDays = () => {
   }, 10); // Adjust speed (lower = faster)
 };
 
-  const images = [
-    new URL('@/assets/img/1.jpg', import.meta.url).href,
-    new URL('@/assets/img/2.jpg', import.meta.url).href,
-    new URL('@/assets/img/3.jpg', import.meta.url).href,
-    new URL('@/assets/img/4.jpg', import.meta.url).href,
-    new URL('@/assets/img/5.jpg', import.meta.url).href,
-    new URL('@/assets/img/4.jpg', import.meta.url).href,
-    new URL('@/assets/img/2.jpg', import.meta.url).href,
-    new URL('@/assets/img/5.jpg', import.meta.url).href,
-    new URL('@/assets/img/1.jpg', import.meta.url).href,
-    new URL('@/assets/img/2.jpg', import.meta.url).href,
-    new URL('@/assets/img/3.jpg', import.meta.url).href,
-    new URL('@/assets/img/4.jpg', import.meta.url).href,
-    new URL('@/assets/img/5.jpg', import.meta.url).href,
-    new URL('@/assets/img/4.jpg', import.meta.url).href,
-    new URL('@/assets/img/2.jpg', import.meta.url).href,
-    new URL('@/assets/img/5.jpg', import.meta.url).href,
-  ];
+// Use Vite's import.meta.glob to get all images from the gallery folder
+const imageModules = import.meta.glob('@/assets/img/gallery/*.{jpg,jpeg,png,gif,webp}', { eager: true });
+const images = ref([]);
+const isVisible = ref(false);
+const gallerySection = ref(null);
+
+onMounted(() => {
+  // Extract URLs from the modules
+  images.value = Object.values(imageModules).map(module => module.default);
+  
+  // Set up intersection observer to trigger animation
+  const observer = new IntersectionObserver(
+    (entries) => {
+      entries.forEach(entry => {
+        if (entry.isIntersecting) {
+          isVisible.value = true;
+          observer.disconnect();
+        }
+      });
+    },
+    {
+      threshold: 0.1
+    }
+  );
+
+  if (gallerySection.value) {
+    observer.observe(gallerySection.value);
+  }
+
+  // If no intersection observer support or immediate visibility needed,
+  // uncomment the following line:
+  // isVisible.value = true;
+});
+
 
   // Call the method to calculate initial time
   onMounted(() => {
@@ -141,7 +157,6 @@ const animateDays = () => {
   };
 
   onMounted(() => {
-    // Get all sections with ref="sectionRef"
     const sections = document.querySelectorAll('[data-section]');
     sections.forEach(section => {
       sectionRefs.value.push(section);
@@ -187,9 +202,9 @@ const closeModal = () => {
         <div class="flex-none w-1/3 text-center">
           <div class="relative w-40 h-40 mx-auto border-4 border-white rounded-full overflow-hidden">
             <img
-              src="@/assets/img/avt1.jpg"
+              src="@/assets/img/avt3.jpg"
               alt="Couple"
-              class="w-full h-full object-cover transform scale-110 translate-x translate-y-2"
+              class="w-full h-full object-cover transform scale-160 translate-x transform: translateY(-50);"
             />
           </div>
 
@@ -243,33 +258,36 @@ const closeModal = () => {
 
     <!-- "Gallery" Section -->
     <section
-      id="gallery"
-      data-section
-      class="min-h-screen flex flex-col items-center justify-center bg-white px-4 py-12 opacity-0 transform transition-all duration-700 ease-out"
-    >
-      <h2 class="text-4xl font-bold text-red-500 mb-12 pt-6 text-center">
-        📸 Our Beautiful Memories 📸
-      </h2>
-      
-      <div class="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 lg:grid-cols-4 gap-6 w-full max-w-7xl mx-auto ">
-        <div  data-section
-          v-for="(image, index) in images" 
-          :key="index"
-          @click="openImage(image)"
-          class="aspect-[4/5] relative group overflow-hidden rounded-xl shadow-lg cursor-pointer opacity-0 translate-y-10 transform transition-all duration-700 ease-out transition-transform duration-500 ease-out"
+    id="gallery"
+    ref="gallerySection"
+    :class="['min-h-screen flex flex-col items-center justify-center bg-white px-4 py-12 transform transition-all duration-700 ease-out', 
+             isVisible ? 'opacity-100' : 'opacity-0']"
+  >
+    <h2 class="text-4xl font-bold text-red-500 mb-12 pt-6 text-center">
+      📸 Our Beautiful Memories 📸
+    </h2>
+    
+    <div class="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 lg:grid-cols-4 gap-2 w-full max-w-7xl mx-auto">
+      <div
+        v-for="(image, index) in images"
+        :key="index"
+        :class="['aspect-[4/5] relative group overflow-hidden rounded-xl shadow-lg cursor-pointer transform transition-all duration-700 ease-out transition-transform duration-500 ease-out',
+                isVisible ? 'opacity-100 translate-y-0' : 'opacity-0 translate-y-10']"
+        :style="{ transitionDelay: `${index * 100}ms` }"
+        @click="openImage(image)"
+      >
+        <img
+          :src="image"
+          class="w-full h-full object-cover absolute inset-0 transition-transform duration-500 ease-out group-hover:scale-110"
+          alt="Gallery image"
         >
-          <img 
-            :src="image" 
-            class="w-full h-full object-cover absolute inset-0 transition-transform duration-500 ease-out group-hover:scale-110"
-           
-          >
-          <div class="absolute inset-0 bg-gradient-to-t from-black/50 to-transparent opacity-0 group-hover:opacity-100 transition-opacity duration-600 ease-in-out">
-            <div class="absolute bottom-0 left-0 right-0 p-4 text-white transform translate-y-full group-hover:translate-y-0 transition-transform duration-600 ease-in-out">
-            </div>
+        <div class="absolute inset-0 bg-gradient-to-t from-black/50 to-transparent opacity-0 group-hover:opacity-100 transition-opacity duration-600 ease-in-out">
+          <div class="absolute bottom-0 left-0 right-0 p-4 text-white transform translate-y-full group-hover:translate-y-0 transition-transform duration-600 ease-in-out">
           </div>
         </div>
       </div>
-    </section>
+    </div>
+  </section>
 
           <!-- Image Modal/Lightbox -->
 <div 
