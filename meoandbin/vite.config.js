@@ -5,7 +5,7 @@ import vueDevTools from 'vite-plugin-vue-devtools'
 import tailwindcss from '@tailwindcss/vite'
 
 // https://vite.dev/config/
-export default defineConfig(({ command, mode }) => ({
+export default defineConfig({
   plugins: [
     vue(),
     vueDevTools(),
@@ -25,5 +25,5 @@ export default defineConfig(({ command, mode }) => ({
       }
     }
   },
-  base: mode === "production" ? "/Valentine-Vue-Tailwind/" : "/",
-}))
+  base: process.env.NODE_ENV === "production" ? "/Valentine-Vue-Tailwind/" : "/",
+})
