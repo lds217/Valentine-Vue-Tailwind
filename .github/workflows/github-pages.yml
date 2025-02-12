@@ -38,11 +38,11 @@ jobs:
           node-version: '20.17.0'
       - name: Install dependencies
         run: |
-          cd meo-and-bin
+          cd meoandbin
           npm install
       - name: Build project
         run: |
-          cd meo-and-bin
+          cd meoandbin
           npm run build
       - name: Setup Pages
         id: pages
