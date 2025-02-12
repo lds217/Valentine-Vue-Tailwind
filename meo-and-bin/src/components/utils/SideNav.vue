@@ -9,10 +9,10 @@ const props = defineProps({
 });
 
 const navItems = [
-  { id: 'together', icon: Heart, label: "We've been together" },
-  { id: 'timeline', icon: Users, label: "We met" },
-  { id: 'places', icon: Map, label: "Places we've been" },
-  { id: 'gallery', icon: ImageIcon, label: "Gallery" }
+  { id: 'together', icon: Heart,},
+  { id: 'timeline', icon: Users,  },
+  { id: 'places', icon: Map, },
+  { id: 'gallery', icon: ImageIcon,  }
 ];
 </script>
 
@@ -25,11 +25,6 @@ const navItems = [
           class="group relative flex items-center hover:text-yellow-300 transition-all duration-300"
         >
           <component :is="item.icon" class="w-6 h-6" />
-          <span 
-            class="absolute left-full ml-2 px-2 py-1 bg-pink-600 rounded-md text-sm whitespace-nowrap opacity-0 group-hover:opacity-100 transition-all duration-300 shadow-lg"
-          >
-            {{ item.label }}
-          </span>
         </button>
       </li>
     </ul>

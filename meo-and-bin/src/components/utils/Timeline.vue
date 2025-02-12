@@ -197,4 +197,9 @@ table.ContributionCalendar-grid {
   border-spacing: 2px !important;
   border-collapse: separate !important;
 }
+
+.ContributionCalendar-day[data-date="2025-02-12"] {
+    background-color: var(--color-calendar-graph-day-bg) !important;
+    fill: var(--color-calendar-graph-day-bg) !important;
+}
 </style>

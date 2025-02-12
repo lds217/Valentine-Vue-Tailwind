@@ -11,13 +11,14 @@ const defaultCenter = [10.7769, 106.7009];
 const defaultZoom = 6;
 
 import image1 from '@/assets/img/1.jpg';
+import { name } from "@vue/eslint-config-prettier/skip-formatting";
 
 const regions = {
   southVietnam: {
     center: [10.7769, 106.7009],
     zoom: 7,
     minZoom: 8,
-    maxZoom: 10,
+    maxZoom: 11,
     bounds: [
       [8.5, 104.5],  
       [12.5, 109.5]  
@@ -27,7 +28,7 @@ const regions = {
     center: [41.5, -89],
     zoom: 5,
     minZoom: 5,
-    maxZoom: 10,
+    maxZoom: 7,
     bounds: [
       [36, -98],  // Southwest
       [47, -80]   // Northeast
@@ -46,35 +47,84 @@ const vietnamPlaces = [
   },
 
   {
-    name: 'Vung Tau',
-    coordinates: [10.3460, 107.0843],
+    name: 'Le Chanh Village',
+    coordinates: [10.735306, 105.167250],
     description: 'Beautiful coastal city where we watched the sunset together.',
     image: 'https://source.unsplash.com/400x300/?vung-tau',
     date: 'March 2024'
-  }
+  },
+  {
+    name: 'Duc Hoa Village',
+    coordinates: [10.8237, 106.457239],
+    description: 'The city of eternal spring, where we enjoyed the cool weather and beautiful flowers.',
+    image: 'https://source.unsplash.com/400x300/?dalat',
+    date: 'May 2024'
+  },
+  {
+    name: 'Giga Mall',
+    coordinates: [10.82755, 106.72178],
+    description: 'The paradise island where we enjoyed the sun and sea.',
+    image: 'https://source.unsplash.com/400x300/?phu-quoc',
+    date: 'July 2024'
+  },
+  {
+    name: 'Glamping',
+    coordinates: [10.867987, 106.84186],
+    description: 'The bustling market where we enjoyed shopping and local food.',
+    image: 'https://source.unsplash.com/400x300/?ben-thanh-market',
+    date: 'September 2024'
+  },
+  {
+    name: 'Di An District',
+    coordinates: [10.920968, 106.7796],
+    description: 'The bustling market where we enjoyed shopping and local food.',
+    image: 'https://source.unsplash.com/400x300/?ben-thanh-market',
+    date: 'November 2024'
+  },
+  {
+    name: 'Ben Cat City',
+    coordinates: [11.1304262, 106.62300],
+    description: 'The bustling market where we enjoyed shopping and local food.',
+    image: 'https://source.unsplash.com/400x300/?ben-thanh-market',
+    date: 'November 2024'
+  },
+  {
+    name: 'Phan Dien Village',
+    coordinates: [11.29774849, 108.517254],
+    description: 'The bustling market where we enjoyed shopping and local food.',
+    image: 'https://source.unsplash.com/400x300/?ben-thanh-market',
+    date: 'November 2024'
+  },
 ];
 
 // US locations
 const usPlaces = [
   {
     name: 'Minneapolis, Minnesota',
-    coordinates: [44.9778, -93.2650],
+    coordinates: [45.167787, -93.2117390],
     description: 'The vibrant Twin Cities with beautiful lakes.',
     image: 'https://source.unsplash.com/400x300/?minneapolis',
     date: 'April 2024'
   },
   {
-    name: 'Indianapolis, Indiana',
-    coordinates: [39.7684, -86.1581],
+    name: 'Purdue Indianapolis',
+    coordinates: [39.77414, -86.172488],
     description: 'The crossroads of America.',
     image: 'https://source.unsplash.com/400x300/?indianapolis',
     date: 'May 2024'
   },
   {
     name: 'Columbus, Ohio',
-    coordinates: [39.9612, -82.9988],
+    coordinates: [39.965158, -83.0069],
     description: 'The heart of it all.',
     image: 'https://source.unsplash.com/400x300/?columbus-ohio',
+    date: 'June 2024'
+  },
+  {
+    name: 'Denision University',
+    coordinates: [40.367474, -82.774856],
+    description: 'The beautiful campus in Ohio.',
+    image: 'https://source.unsplash.com/400x300/?denison-university',
     date: 'June 2024'
   }
 ];
@@ -214,7 +264,7 @@ onMounted(() => {
     <section
       id="places-vn"
       data-section
-      class="relative min-h-[600px] mb-32 opacity-0 transform translate-y-10 transition-all duration-700 ease-out"
+      class="relative min-h-[600px] mb-12 opacity-0 transform translate-y-10 transition-all duration-700 ease-out"
     >
       <!-- Decorative Background -->
       <div class="absolute inset-0 bg-gradient-to-b from-pink-100 to-red-100 rounded-3xl shadow-xl overflow-hidden">
@@ -246,7 +296,7 @@ onMounted(() => {
     <section
       id="places-usa"
       data-section
-      class="relative min-h-[600px] opacity-0 transform translate-y-10 transition-all duration-700 ease-out"
+      class="relative min-h-[600px] opacity-0 transform  translate-y-10 transition-all duration-700 ease-out "
     >
       <!-- Decorative Background -->
       <div class="absolute inset-0 bg-gradient-to-b from-blue-100 to-purple-100 rounded-3xl shadow-xl overflow-hidden">
