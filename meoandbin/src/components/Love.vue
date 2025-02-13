@@ -15,8 +15,8 @@
   const months = ref(0);
   const isPlaying = ref(true);
   const audioPlayer = ref(1);
-  const progressBar = ref(0); // Progress bar value
-  const volume = ref(1); // Volume level (0 to 1)
+  const progressBar = ref(0); 
+  const volume = ref(1); 
   const currentTrackIndex = ref(0);
   
   // List of audio app
@@ -74,10 +74,9 @@ const animateDays = () => {
     } else {
       clearInterval(interval);
     }
-  }, 10); // Adjust speed (lower = faster)
+  }, 10); 
 };
 
-// Use Vite's import.meta.glob to get all images from the gallery folder
 const imageModules = import.meta.glob('@/assets/img/gallery/*.{jpg,jpeg,png,gif,webp}', { eager: true });
 const images = ref([]);
 const isVisible = ref(false);
@@ -345,7 +344,7 @@ const closeModal = () => {
           <Volume2 class="w-5 h-5" />
         </button>
 
-        <!-- Vertical Volume Slider (appears only on hover) -->
+        <!-- Vertical Volume Slider -->
         <input
           type="range"
           min="0"
@@ -436,13 +435,13 @@ html {
 
 /* Adjust the position and size of the volume slider */
 .volume-slider {
-  width: 60px; /* Make the slider wider so it’s visible */
-  height: 120px; /* Set the height of the slider */
-  transform: rotate(270deg); /* Rotates the slider to make it vertical */
+  width: 60px; 
+  height: 120px; 
+  transform: rotate(270deg);
   position: absolute;
-  bottom: 20px; /* Adjust to position it correctly */
-  left: -12px; /* Adjust to position it correctly */
-  transition: opacity 0.3s ease-in-out; /* Smooth transition for opacity */
+  bottom: 20px; 
+  left: -12px; 
+  transition: opacity 0.3s ease-in-out;
 }
 
 .group:hover .volume-slider {

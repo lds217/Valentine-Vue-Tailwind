@@ -3,8 +3,8 @@ import Home from '@/components/Home.vue'
 import Love from '@/components/Love.vue'
 
 const routes = [
-  { path: '/', component: Home },         // Landing page
-  { path: '/love', component: Love }      // Love counter page (lowercase 'love')
+  { path: '/', component: Home },   
+  { path: '/love', component: Love }    
 ]
 
 const router = createRouter({

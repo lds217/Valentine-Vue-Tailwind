@@ -181,13 +181,13 @@ tool-tip {
 
 /* Style for all contribution blocks */
 .ContributionCalendar-day {
-  border-radius: 3px !important;  /* Consistent rounded corners */
-  width: 11px !important;         /* Maintain width */
-  height: 11px !important;        /* Keep squares proportional */
-  margin: 2px !important;         /* Add spacing between blocks */
+  border-radius: 3px !important;  
+  width: 11px !important;        
+  height: 11px !important;    
+  margin: 2px !important;   
 }
 
-/* If you need to target specific elements through their attributes */
+
 td[data-view-component="true"].ContributionCalendar-day {
   border-radius: 3px !important;
 }

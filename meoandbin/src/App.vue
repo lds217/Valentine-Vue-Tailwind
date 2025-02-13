@@ -4,6 +4,6 @@ import { RouterView } from 'vue-router'
 
 <template>
   <div>
-    <RouterView /> <!-- This loads different pages dynamically -->
+    <RouterView />
   </div>
 </template>

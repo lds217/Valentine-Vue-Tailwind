@@ -131,7 +131,7 @@ const closeModal = () => {
 const resizeImage = (imageUrl, maxWidth = 40, maxHeight = 40) => {
   return new Promise((resolve, reject) => {
     const img = new Image();
-    img.crossOrigin = "Anonymous";  // Handle CORS issues
+    img.crossOrigin = "Anonymous";  
     
     img.onload = () => {
       const canvas = document.createElement('canvas');
@@ -177,7 +177,6 @@ const createPinIcon = async (imageUrl) => {
   }
 };
 
-// Modified initializeMap function to handle intersection observer
 const initializeMap = async (elementId, config, places) => {
   const map = L.map(elementId, {
     center: config.center,

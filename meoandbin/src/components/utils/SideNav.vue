@@ -32,7 +32,7 @@ const navItems = [
 </template>
 
 <style scoped>
-/* Optional: Add a subtle hover effect */
+
 button {
   transform: scale(1);
   transition: transform 0.2s;
