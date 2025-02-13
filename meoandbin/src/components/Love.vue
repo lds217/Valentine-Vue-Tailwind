@@ -105,9 +105,6 @@ onMounted(() => {
     observer.observe(gallerySection.value);
   }
 
-  // If no intersection observer support or immediate visibility needed,
-  // uncomment the following line:
-  // isVisible.value = true;
 });
 
 
