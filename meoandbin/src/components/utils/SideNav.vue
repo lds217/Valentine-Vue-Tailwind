@@ -1,5 +1,5 @@
 <script setup>
-import { Heart, Users, Map, Image as ImageIcon } from 'lucide-vue-next';
+import { Heart, Users, Map, Image as ImageIcon, Book } from 'lucide-vue-next';
 
 const props = defineProps({
   scrollToSection: {
@@ -12,6 +12,7 @@ const navItems = [
   { id: 'together', icon: Heart,},
   { id: 'timeline', icon: Users,  },
   { id: 'places', icon: Map, },
+  { id: 'scrapbook', icon: Book, },
   { id: 'gallery', icon: ImageIcon,  }
 ];
 </script>

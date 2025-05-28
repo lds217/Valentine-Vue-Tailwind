@@ -1,5 +1,5 @@
 <script setup>
-import { ref, onMounted } from "vue";
+import { ref, onMounted, onUnmounted } from "vue";
 import 'leaflet/dist/leaflet.css';
 import L from 'leaflet';
 
@@ -122,13 +122,22 @@ let currentTileLayer = {};
 const openModal = (place) => {
   modalContent.value = place;
   showModal.value = true;
+  document.body.classList.add('modal-open');
 };
 
 const closeModal = () => {
   showModal.value = false;
+  document.body.classList.remove('modal-open');
 };
 
-const resizeImage = (imageUrl, maxWidth = 40, maxHeight = 40) => {
+// Clean up when component is unmounted
+onUnmounted(() => {
+  document.body.classList.remove('modal-open');
+});
+
+const NEW_MARKER_SIZE = 48; // New size for markers (e.g., 48px)
+
+const resizeImage = (imageUrl, maxWidth = NEW_MARKER_SIZE, maxHeight = NEW_MARKER_SIZE) => {
   return new Promise((resolve, reject) => {
     const img = new Image();
     img.crossOrigin = "Anonymous";  
@@ -139,9 +148,12 @@ const resizeImage = (imageUrl, maxWidth = 40, maxHeight = 40) => {
       canvas.height = maxHeight;
       
       const ctx = canvas.getContext('2d');
+      // Draw image maintaining aspect ratio, then crop/center if needed, or simply fill
+      // For simplicity here, we just draw to fill the new size.
+      // A more sophisticated approach might involve letterboxing or aspect-ratio-preserving fill.
       ctx.drawImage(img, 0, 0, maxWidth, maxHeight);
       
-      resolve(canvas.toDataURL('image/jpeg', 0.8));
+      resolve(canvas.toDataURL('image/jpeg', 0.85)); // Slightly higher quality for larger images
     };
     
     img.onerror = (err) => reject(err);
@@ -154,25 +166,25 @@ const createPinIcon = async (imageUrl) => {
     const resizedImageUrl = await resizeImage(imageUrl);
     return L.divIcon({
       html: `
-        <div data-section class="marker-wrapper opacity-0 transform translate-y-10 transition-all duration-700 ease-out">
-          <img class="outline-2 outline-offset-2 outline-pink-500 rounded-md w-8 h-8 object-cover" src="${resizedImageUrl}" alt="location" />
+        <div class="marker-wrapper"> 
+          <img class="outline-2 outline-offset-2 outline-pink-500 rounded-lg w-${NEW_MARKER_SIZE/4} h-${NEW_MARKER_SIZE/4} object-cover shadow-lg" src="${resizedImageUrl}" alt="location" />
         </div>
       `,
       className: 'custom-photo-pin',
-      iconSize: [32, 32],
-      iconAnchor: [16, 16]
+      iconSize: [NEW_MARKER_SIZE, NEW_MARKER_SIZE],
+      iconAnchor: [NEW_MARKER_SIZE / 2, NEW_MARKER_SIZE / 2]
     });
   } catch (error) {
-    console.error('Error resizing image:', error);
+    console.error('Error resizing image, using original for:', imageUrl, error);
     return L.divIcon({
       html: `
-        <div data-section class="marker-wrapper opacity-0 transform translate-y-10 transition-all duration-700 ease-out">
-          <img class="outline-2 outline-offset-2 outline-pink-500 w-8 h-8 object-cover" src="${imageUrl}" alt="location" />
+        <div class="marker-wrapper">
+          <img class="outline-2 outline-offset-2 outline-pink-500 rounded-lg w-${NEW_MARKER_SIZE/4} h-${NEW_MARKER_SIZE/4} object-cover shadow-lg" src="${imageUrl}" alt="location (fallback)" />
         </div>
       `,
       className: 'custom-photo-pin',
-      iconSize: [32, 32],
-      iconAnchor: [16, 16]
+      iconSize: [NEW_MARKER_SIZE, NEW_MARKER_SIZE],
+      iconAnchor: [NEW_MARKER_SIZE / 2, NEW_MARKER_SIZE / 2]
     });
   }
 };
@@ -200,135 +212,134 @@ const initializeMap = async (elementId, config, places) => {
     }
   ).addTo(map);
 
-  // Add markers with intersection observer
   for (const place of places) {
     const icon = await createPinIcon(place.image);
-    const marker = L.marker(place.coordinates, { icon })
-      .addTo(map)
-      .on('click', () => openModal(place));
-    
-    // Get the marker element after it's added to the map
-    const markerElement = marker.getElement();
-    if (markerElement) {
-      const markerWrapper = markerElement.querySelector('.marker-wrapper');
-      if (markerWrapper) {
-        const observer = new IntersectionObserver(
-          ([entry]) => {
-            if (entry.isIntersecting) {
-              markerWrapper.classList.remove('opacity-0', 'translate-y-10');
-              markerWrapper.classList.add('opacity-100', 'translate-y-0');
-            }
-            else {
-              markerWrapper.classList.remove('opacity-100', 'translate-y-0');
-              markerWrapper.classList.add('opacity-0', 'translate-y-10');
-            }
+    const marker = L.marker(place.coordinates, { icon });
 
-          },
-          { threshold: 0.3 }
-        );
-        observer.observe(markerWrapper);
+    marker.on('add', function () {
+      const markerElement = this.getElement();
+      if (markerElement) {
+        const markerWrapper = markerElement.querySelector('.marker-wrapper');
+        if (markerWrapper) {
+          // Add a random delay between 0 and 1 second
+          const delay = Math.random() * 1000;
+          markerWrapper.style.transitionDelay = `${delay}ms`;
+          markerWrapper.style.animationDelay = `${delay}ms`;
+          
+          const observer = new IntersectionObserver(
+            ([entry]) => {
+              if (entry.isIntersecting) {
+                markerWrapper.classList.add('marker-visible');
+                observer.unobserve(markerWrapper);
+                // Reset the delay after animation
+                setTimeout(() => {
+                  markerWrapper.style.transitionDelay = '0s';
+                  markerWrapper.style.animationDelay = '0s';
+                }, delay + 800);
+              }
+            },
+            { threshold: 0.3 }
+          );
+          observer.observe(markerWrapper);
+        } else {
+          console.error('Marker wrapper (.marker-wrapper) not found in icon HTML for place:', place.name);
+        }
+      } else {
+        console.error('Marker element (icon) not found after being added to map for place:', place.name);
       }
-    }
+    });
+
+    marker.addTo(map).on('click', () => openModal(place));
   }
 
   return map;
 };
 
-// Update onMounted to handle async initialization
-onMounted(() => {
-  setTimeout(async () => {
-    vietnamMap = await initializeMap('vietnam-map', regions.southVietnam, vietnamPlaces);
-    usMap = await initializeMap('us-map', regions.centralUSA, usPlaces);
-  }, 100);
+onMounted(async () => {
+  vietnamMap = await initializeMap('vietnamMap', regions.southVietnam, vietnamPlaces);
+  usMap = await initializeMap('usMap', regions.centralUSA, usPlaces);
+
+  const mapSections = document.querySelectorAll('.map-container');
+  const mapObserver = new IntersectionObserver((entries, observer) => {
+    entries.forEach(entry => {
+      if (entry.isIntersecting) {
+        entry.target.classList.add('map-visible');
+        const mapInstance = entry.target.id === 'vietnamMapContainer' ? vietnamMap : usMap;
+        if (mapInstance) {
+          mapInstance.invalidateSize();
+        }
+        observer.unobserve(entry.target);
+      }
+    });
+  }, { threshold: 0.2 });
+
+  mapSections.forEach(section => mapObserver.observe(section));
+
+  window.addEventListener('resize', () => {
+    if (vietnamMap) vietnamMap.invalidateSize();
+    if (usMap) usMap.invalidateSize();
+  });
 });
 </script>
 
-<template class>
-  <div class="maps-container py-12  px-4">
-    <!-- Vietnam Section -->
-    <section
-      id="places-vn"
-      data-section
-      class="relative min-h-[600px] mb-12 opacity-0 transform translate-y-10 transition-all duration-700 ease-out"
-    >
-      <!-- Decorative Background -->
-      <div class="absolute inset-0 bg-gradient-to-b from-pink-100 to-red-100 rounded-3xl shadow-xl overflow-hidden">
-        <div class="absolute top-0 left-0 w-full h-full bg-hearts opacity-5"></div>
+<template>
+  <div data-section class="min-h-screen bg-pink-50 py-16 opacity-0 transform translate-y-10 transition-all duration-700 ease-out">
+    <div class="container mx-auto px-4">
+      <div class="text-center mb-12">
+        <h2 class="text-5xl font-bold text-pink-600 mb-4 hover:text-pink-500 transition-colors duration-300">🌍 Places We've Been 🌍</h2>
+        <p class="text-lg text-gray-600 mt-4 max-w-2xl mx-auto">
+          From the bustling streets of Saigon to the quiet corners of America, our adventures have taken us far and wide.
+        </p>
       </div>
 
-      <!-- Content Container -->
-      <div class="relative z-10 p-8">
-        <h2 class="text-4xl font-bold text-red-800 text-center mb-8">
-          🌍 Our Journey in Vietnam 🌍
-        </h2>
-
-        <!-- Map Container -->
-        <div class="map-wrapper relative mx-auto">
-          <div class="heart-border">
-            <div id="vietnam-map" class="w-full h-[400px] rounded-3xl overflow-hidden"></div>
-          </div>
-          
-          <!-- Decorative Elements -->
-          <div class="absolute -top-4 -left-4 w-8 h-8 bg-pink-400 rounded-full flex items-center justify-center text-white text-xl">❤️</div>
-          <div class="absolute -bottom-4 -right-4 w-8 h-8 bg-pink-400 rounded-full flex items-center justify-center text-white text-xl">❤️</div>
+      <div class="flex flex-col md:flex-row gap-8 items-start">
+        <!-- Vietnam Map Section -->
+        <div id="vietnamMapContainer" class="map-container md:w-1/2 bg-white p-6 rounded-xl shadow-2xl transform transition-all duration-1000 ease-out hover:shadow-pink-200/50">
+          <h3 class="text-3xl font-semibold text-pink-500 mb-6 text-center">Adventures in Vietnam 🇻🇳</h3>
+          <div id="vietnamMap" class="h-96 md:h-[600px] rounded-lg shadow-inner"></div>
+          <p class="text-center text-gray-500 mt-4 text-sm">
+            Exploring the vibrant culture and beautiful landscapes of Vietnam.
+          </p>
         </div>
 
-        <p class="text-lg mt-8 text-red-800 text-center">Where our love story began 💞</p>
-      </div>
-    </section>
-
-    <!-- USA Section -->
-    <section
-      id="places-usa"
-      data-section
-      class="relative min-h-[600px] opacity-0 transform  translate-y-10 transition-all duration-700 ease-out "
-    >
-      <!-- Decorative Background -->
-      <div class="absolute inset-0 bg-gradient-to-b from-blue-100 to-purple-100 rounded-3xl shadow-xl overflow-hidden">
-        <div class="absolute top-0 left-0 w-full h-full bg-stars opacity-5"></div>
-      </div>
-
-      <!-- Content Container -->
-      <div class="relative z-10 p-8">
-        <h2 class="text-4xl font-bold text-blue-800 text-center mb-8">
-          🗽 Our American Adventures 🗽
-        </h2>
-
-        <!-- Map Container -->
-        <div class="map-wrapper relative mx-auto">
-          <div class="heart-border blue">
-            <div id="us-map" class="w-full h-[400px] rounded-3xl overflow-hidden"></div>
-          </div>
-          
-          <!-- Decorative Elements -->
-          <div class="absolute -top-4 -left-4 w-8 h-8 bg-blue-400 rounded-full flex items-center justify-center text-white text-xl">💫</div>
-          <div class="absolute -bottom-4 -right-4 w-8 h-8 bg-blue-400 rounded-full flex items-center justify-center text-white text-xl">💫</div>
+        <!-- US Map Section -->
+        <div id="usMapContainer" class="map-container md:w-1/2 bg-white p-6 rounded-xl shadow-2xl transform transition-all duration-1000 ease-out hover:shadow-blue-200/50">
+          <h3 class="text-3xl font-semibold text-blue-500 mb-6 text-center">Journeys in the USA 🇺🇸</h3>
+          <div id="usMap" class="h-96 md:h-[600px] rounded-lg shadow-inner"></div>
+           <p class="text-center text-gray-500 mt-4 text-sm">
+            Discovering new horizons and creating memories across the United States.
+          </p>
         </div>
-
-        <p class="text-lg mt-8 text-blue-800 text-center">Creating memories across the States 💫</p>
       </div>
-    </section>
+    </div>
   </div>
 
-  <!-- Modal -->
   <Teleport to="body">
-    <div v-if="showModal" 
-         class="fixed inset-0 bg-gray-800 bg-opacity-50 flex justify-center items-center z-50"
-         @click.self="closeModal">
-      <div class="bg-white p-6 rounded-lg w-96 max-w-lg transform transition-all duration-300 scale-100">
-        <div class="relative">
-          <h3 class="text-2xl font-bold text-center text-pink-600 mb-4">{{ modalContent.name }}</h3>
-          <img :src="modalContent.image" 
-               :alt="modalContent.name"
-               class="w-full h-48 object-cover rounded-lg shadow-md">
-          <button @click="closeModal" 
-                  class="mt-4 bg-pink-500 text-white px-4 py-2 rounded-lg w-full hover:bg-pink-600 transition-colors">
-            Close
+    <!-- Modal for displaying place details -->
+    <div 
+      v-if="showModal" 
+      class="fixed inset-0 bg-black/90 z-[9999] flex items-center justify-center fixed-modal"
+      @click="closeModal"
+    >
+      <div class="fixed top-1/2 left-1/2 transform -translate-x-1/2 -translate-y-1/2 w-full max-w-4xl mx-auto px-4">
+        <div class="relative flex items-center justify-center">
+          <img 
+            :src="modalContent.image" 
+            class="w-full h-auto object-contain rounded-lg transform transition-all duration-300 ease-out"
+            :class="showModal ? 'scale-100 opacity-100' : 'scale-90 opacity-0'"
+            @click.stop
+          >
+           <div class="absolute bottom-0 left-0 right-0 p-4 text-white bg-gradient-to-t from-black/60 to-transparent rounded-b-lg">
+            <h3 class="text-2xl font-bold">{{ modalContent.name }}</h3>
+          </div>
+          <button 
+            @click="closeModal"
+            class="absolute top-4 right-4 text-white bg-red-500 rounded-full p-2 hover:bg-red-400 transition-colors"
+          >
+            <svg xmlns="http://www.w3.org/2000/svg" class="h-6 w-6" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+              <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M6 18L18 6M6 6l12 12" />
+            </svg>
           </button>
-          
-          <!-- Decorative hearts -->
-          <div class="absolute -top-2 -left-2 text-pink-400 text-xl">❤️</div>
-          <div class="absolute -top-2 -right-2 text-pink-400 text-xl">❤️</div>
         </div>
       </div>
     </div>
@@ -415,18 +426,112 @@ onMounted(() => {
   display: none;
 }
 
+.custom-photo-pin img {
+  border-radius: 0.5rem;
+  object-fit: cover;
+  transform-origin: bottom center;
+  transition: all 0.5s cubic-bezier(0.34, 1.56, 0.64, 1);
+  box-shadow: 0 4px 6px -1px rgba(0, 0, 0, 0.1), 0 2px 4px -1px rgba(0, 0, 0, 0.06);
+}
+
+.custom-photo-pin:hover img {
+  transform: scale(1.15) translateY(-5px);
+  box-shadow: 0 20px 25px -5px rgba(0, 0, 0, 0.1), 0 10px 10px -5px rgba(0, 0, 0, 0.04);
+}
+
 .marker-wrapper {
-  transition: all 0.7s ease-out;
+  opacity: 0;
+  transform: translateY(20px) scale(0.8);
+  transition: all 0.8s cubic-bezier(0.34, 1.56, 0.64, 1);
+  will-change: transform, opacity;
 }
 
-.marker-wrapper:hover img {
-  transform: scale(1.2);
-  transition: transform 0.3s ease;
+.marker-wrapper.marker-visible {
+  opacity: 1;
+  transform: translateY(0) scale(1);
+  animation: marker-bounce 0.8s cubic-bezier(0.34, 1.56, 0.64, 1);
 }
 
-.custom-photo-pin {
-  background: transparent;
-  border: none;
+@keyframes marker-bounce {
+  0% {
+    transform: translateY(40px) scale(0.8);
+    opacity: 0;
+  }
+  50% {
+    transform: translateY(-15px) scale(1.1);
+    opacity: 0.8;
+  }
+  75% {
+    transform: translateY(5px) scale(0.95);
+    opacity: 0.9;
+  }
+  100% {
+    transform: translateY(0) scale(1);
+    opacity: 1;
+  }
 }
 
+.map-container {
+  opacity: 0;
+  transform: translateY(50px) scale(0.95);
+  transition: all 1s cubic-bezier(0.34, 1.56, 0.64, 1);
+}
+
+.map-container.map-visible {
+  opacity: 1;
+  transform: translateY(0) scale(1);
+}
+
+/* Modal animation */
+@keyframes modal-enter {
+  0% {
+    opacity: 0;
+    transform: scale(0.9) translateY(20px);
+  }
+  100% {
+    opacity: 1;
+    transform: scale(1) translateY(0);
+  }
+}
+
+.modal-content-enter {
+  animation: modal-enter 0.5s cubic-bezier(0.34, 1.56, 0.64, 1) forwards;
+}
+
+/* Add a subtle glow to map containers when visible */
+.map-container.map-visible {
+  box-shadow: 0 0 30px -5px rgba(236, 72, 153, 0.3); /* Soft pink glow */
+}
+
+#usMapContainer.map-visible {
+   box-shadow: 0 0 30px -5px rgba(59, 130, 246, 0.3); /* Soft blue glow for US map */
+}
+
+/* Ensure Leaflet controls are styled consistently */
+.leaflet-bar a, .leaflet-bar a:hover {
+  background-color: white !important;
+  color: #ec4899 !important; /* pink-500 */
+  border-color: #fbcfe8 !important; /* pink-200 */
+}
+
+.leaflet-bar a.leaflet-disabled {
+  background-color: #fce7f3 !important; /* pink-100 */
+  color: #fda4af !important; /* pink-300 */
+}
+
+/* Ensure modal covers entire viewport */
+.fixed-modal {
+  position: fixed;
+  top: 0;
+  left: 0;
+  width: 100vw; /* Use vw for full viewport width */
+  height: 100vh; /* Use vh for full viewport height */
+  z-index: 9999; /* High z-index */
+  /* backdrop-filter: blur(4px); /* Optional: if you want blur like Love.vue */
+}
+
+/* Prevent body scroll when modal is open */
+body.modal-open {
+  overflow: hidden;
+}
 </style>

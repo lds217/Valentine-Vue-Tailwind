@@ -174,6 +174,39 @@ const closeModal = () => {
   selectedImage.value = null;
 };
 
+const scrapbookEntries = ref([]);
+
+// Add this to your existing onMounted hook or create a new one
+onMounted(() => {
+  // Existing onMounted code...
+
+  // Enhanced intersection observer for scrapbook entries
+  const scrapbookObserver = new IntersectionObserver(
+    (entries) => {
+      entries.forEach(entry => {
+        if (entry.isIntersecting) {
+          entry.target.classList.add('is-visible');
+          // Add random delay class
+          const randomDelay = Math.floor(Math.random() * 3);
+          entry.target.classList.add(`delay-${randomDelay}`);
+        } else {
+          entry.target.classList.remove('is-visible');
+        }
+      });
+    },
+    {
+      threshold: 0.15,
+      rootMargin: '-50px 0px'
+    }
+  );
+
+  // Observe all scrapbook entries
+  scrapbookEntries.value = document.querySelectorAll('.scrapbook-entry');
+  scrapbookEntries.value.forEach(entry => {
+    scrapbookObserver.observe(entry);
+  });
+});
+
 </script>
 
 
@@ -252,7 +285,209 @@ const closeModal = () => {
      <PlacesMap />
     </section>
 
-    <!-- "Gallery" Section -->
+    <!-- 📖 Scrapbook Section -->
+    <section id="scrapbook" class="min-h-screen py-16 bg-gradient-to-b from-pink-50 to-white">
+      <div class="text-center mb-16">
+        <h2 class="text-5xl font-bold text-pink-600 mb-4 hover:text-pink-500 transition-colors duration-300">Our Love Story Scrapbook 📖</h2>
+        <p class="text-lg text-gray-600 mt-4 max-w-2xl mx-auto">A collection of our precious memories together, each one telling a unique story of our journey.</p>
+      </div>
+      <div class="container mx-auto px-4">
+        <div class="space-y-32">
+          <!-- Scrapbook Entry 1 -->
+          <div class="scrapbook-entry relative">
+            <div class="absolute w-0.5 h-full bg-gradient-to-b from-pink-300 via-pink-400 to-pink-300 left-1/2 transform -translate-x-1/2"></div>
+            <div class="flex items-center">
+              <div class="w-1/2 pr-12">
+                <div class="prose entry-content entry-text">
+                  <h3 class="text-2xl font-bold mb-4 text-pink-600">Our First Memory</h3>
+                  <p class="text-gray-600">Lorem ipsum dolor sit amet, consectetur adipiscing elit. Sed do eiusmod tempor incididunt ut labore et dolore magna aliqua.</p>
+                </div>
+              </div>
+              <div class="w-1/2 pl-12">
+                <div class="entry-content entry-image">
+                  <img src="@/assets/img/scrapbook/Biniuoilaiu-1.jpg" alt="Memory 1" 
+                       class="rounded-lg shadow-lg w-full transform transition-transform duration-500 hover:scale-105">
+                </div>
+              </div>
+            </div>
+          </div>
+
+          <!-- Scrapbook Entry 2 -->
+          <div class="scrapbook-entry relative">
+            <div class="absolute w-0.5 h-full bg-gradient-to-b from-pink-300 via-pink-400 to-pink-300 left-1/2 transform -translate-x-1/2"></div>
+            <div class="flex items-center">
+              <div class="w-1/2 pr-12">
+                <div class="entry-content entry-image">
+                  <img src="@/assets/img/scrapbook/Biniuoilaiu-2.jpg" alt="Memory 2" 
+                       class="rounded-lg shadow-lg w-full transform transition-transform duration-500 hover:scale-105">
+                </div>
+              </div>
+              <div class="w-1/2 pl-12">
+                <div class="prose entry-content entry-text">
+                  <h3 class="text-2xl font-bold mb-4 text-pink-600">Sweet Moments Together</h3>
+                  <p class="text-gray-600">Ut enim ad minim veniam, quis nostrud exercitation ullamco laboris nisi ut aliquip ex ea commodo consequat.</p>
+                </div>
+              </div>
+            </div>
+          </div>
+
+          <!-- Scrapbook Entry 3 -->
+          <div class="scrapbook-entry relative">
+            <div class="absolute w-0.5 h-full bg-gradient-to-b from-pink-300 via-pink-400 to-pink-300 left-1/2 transform -translate-x-1/2"></div>
+            <div class="flex items-center">
+              <div class="w-1/2 pr-12">
+                <div class="prose entry-content entry-text">
+                  <h3 class="text-2xl font-bold mb-4 text-pink-600">Beautiful Adventures</h3>
+                  <p class="text-gray-600">Duis aute irure dolor in reprehenderit in voluptate velit esse cillum dolore eu fugiat nulla pariatur.</p>
+                </div>
+              </div>
+              <div class="w-1/2 pl-12">
+                <div class="entry-content entry-image">
+                  <img src="@/assets/img/scrapbook/Biniuoilaiu-3.jpg" alt="Memory 3" 
+                       class="rounded-lg shadow-lg w-full transform transition-transform duration-500 hover:scale-105">
+                </div>
+              </div>
+            </div>
+          </div>
+
+          <!-- Scrapbook Entry 4 -->
+          <div class="scrapbook-entry relative">
+            <div class="absolute w-0.5 h-full bg-gradient-to-b from-pink-300 via-pink-400 to-pink-300 left-1/2 transform -translate-x-1/2"></div>
+            <div class="flex items-center">
+              <div class="w-1/2 pr-12">
+                <div class="entry-content entry-image">
+                  <img src="@/assets/img/scrapbook/Biniuoilaiu-4.jpg" alt="Memory 4" 
+                       class="rounded-lg shadow-lg w-full transform transition-transform duration-500 hover:scale-105">
+                </div>
+              </div>
+              <div class="w-1/2 pl-12">
+                <div class="prose entry-content entry-text">
+                  <h3 class="text-2xl font-bold mb-4 text-pink-600">Cherished Times</h3>
+                  <p class="text-gray-600">Excepteur sint occaecat cupidatat non proident, sunt in culpa qui officia deserunt mollit anim id est laborum.</p>
+                </div>
+              </div>
+            </div>
+          </div>
+
+          <!-- Scrapbook Entry 5 -->
+          <div class="scrapbook-entry relative">
+            <div class="absolute w-0.5 h-full bg-gradient-to-b from-pink-300 via-pink-400 to-pink-300 left-1/2 transform -translate-x-1/2"></div>
+            <div class="flex items-center">
+              <div class="w-1/2 pr-12">
+                <div class="prose entry-content entry-text">
+                  <h3 class="text-2xl font-bold mb-4 text-pink-600">Magical Moments</h3>
+                  <p class="text-gray-600">Sed ut perspiciatis unde omnis iste natus error sit voluptatem accusantium doloremque laudantium.</p>
+                </div>
+              </div>
+              <div class="w-1/2 pl-12">
+                <div class="entry-content entry-image">
+                  <img src="@/assets/img/scrapbook/Biniuoilaiu-5.jpg" alt="Memory 5" 
+                       class="rounded-lg shadow-lg w-full transform transition-transform duration-500 hover:scale-105">
+                </div>
+              </div>
+            </div>
+          </div>
+
+          <!-- Scrapbook Entry 6 -->
+          <div class="scrapbook-entry relative">
+            <div class="absolute w-0.5 h-full bg-gradient-to-b from-pink-300 via-pink-400 to-pink-300 left-1/2 transform -translate-x-1/2"></div>
+            <div class="flex items-center">
+              <div class="w-1/2 pr-12">
+                <div class="entry-content entry-image">
+                  <img src="@/assets/img/scrapbook/Biniuoilaiu-6.jpg" alt="Memory 6" 
+                       class="rounded-lg shadow-lg w-full transform transition-transform duration-500 hover:scale-105">
+                </div>
+              </div>
+              <div class="w-1/2 pl-12">
+                <div class="prose entry-content entry-text">
+                  <h3 class="text-2xl font-bold mb-4 text-pink-600">Special Days</h3>
+                  <p class="text-gray-600">Nemo enim ipsam voluptatem quia voluptas sit aspernatur aut odit aut fugit.</p>
+                </div>
+              </div>
+            </div>
+          </div>
+
+          <!-- Scrapbook Entry 7 -->
+          <div class="scrapbook-entry relative">
+            <div class="absolute w-0.5 h-full bg-gradient-to-b from-pink-300 via-pink-400 to-pink-300 left-1/2 transform -translate-x-1/2"></div>
+            <div class="flex items-center">
+              <div class="w-1/2 pr-12">
+                <div class="prose entry-content entry-text">
+                  <h3 class="text-2xl font-bold mb-4 text-pink-600">Unforgettable Times</h3>
+                  <p class="text-gray-600">Neque porro quisquam est, qui dolorem ipsum quia dolor sit amet, consectetur, adipisci velit.</p>
+                </div>
+              </div>
+              <div class="w-1/2 pl-12">
+                <div class="entry-content entry-image">
+                  <img src="@/assets/img/scrapbook/Biniuoilaiu-7.jpg" alt="Memory 7" 
+                       class="rounded-lg shadow-lg w-full transform transition-transform duration-500 hover:scale-105">
+                </div>
+              </div>
+            </div>
+          </div>
+
+          <!-- Scrapbook Entry 8 -->
+          <div class="scrapbook-entry relative">
+            <div class="absolute w-0.5 h-full bg-gradient-to-b from-pink-300 via-pink-400 to-pink-300 left-1/2 transform -translate-x-1/2"></div>
+            <div class="flex items-center">
+              <div class="w-1/2 pr-12">
+                <div class="entry-content entry-image">
+                  <img src="@/assets/img/scrapbook/Biniuoilaiu-8.jpg" alt="Memory 8" 
+                       class="rounded-lg shadow-lg w-full transform transition-transform duration-500 hover:scale-105">
+                </div>
+              </div>
+              <div class="w-1/2 pl-12">
+                <div class="prose entry-content entry-text">
+                  <h3 class="text-2xl font-bold mb-4 text-pink-600">Precious Memories</h3>
+                  <p class="text-gray-600">Quis autem vel eum iure reprehenderit qui in ea voluptate velit esse quam nihil molestiae consequatur.</p>
+                </div>
+              </div>
+            </div>
+          </div>
+
+          <!-- Scrapbook Entry 9 -->
+          <div class="scrapbook-entry relative">
+            <div class="absolute w-0.5 h-full bg-gradient-to-b from-pink-300 via-pink-400 to-pink-300 left-1/2 transform -translate-x-1/2"></div>
+            <div class="flex items-center">
+              <div class="w-1/2 pr-12">
+                <div class="prose entry-content entry-text">
+                  <h3 class="text-2xl font-bold mb-4 text-pink-600">Love Stories</h3>
+                  <p class="text-gray-600">At vero eos et accusamus et iusto odio dignissimos ducimus qui blanditiis praesentium voluptatum.</p>
+                </div>
+              </div>
+              <div class="w-1/2 pl-12">
+                <div class="entry-content entry-image">
+                  <img src="@/assets/img/scrapbook/Biniuoilaiu-9.jpg" alt="Memory 9" 
+                       class="rounded-lg shadow-lg w-full transform transition-transform duration-500 hover:scale-105">
+                </div>
+              </div>
+            </div>
+          </div>
+
+          <!-- Scrapbook Entry 10 -->
+          <div class="scrapbook-entry relative">
+            <div class="absolute w-0.5 h-full bg-gradient-to-b from-pink-300 via-pink-400 to-pink-300 left-1/2 transform -translate-x-1/2"></div>
+            <div class="flex items-center">
+              <div class="w-1/2 pr-12">
+                <div class="entry-content entry-image">
+                  <img src="@/assets/img/scrapbook/Biniuoilaiu-10.jpg" alt="Memory 10" 
+                       class="rounded-lg shadow-lg w-full transform transition-transform duration-500 hover:scale-105">
+                </div>
+              </div>
+              <div class="w-1/2 pl-12">
+                <div class="prose entry-content entry-text">
+                  <h3 class="text-2xl font-bold mb-4 text-pink-600">Forever Together</h3>
+                  <p class="text-gray-600">Nam libero tempore, cum soluta nobis est eligendi optio cumque nihil impedit quo minus id quod maxime placeat.</p>
+                </div>
+              </div>
+            </div>
+          </div>
+
+        </div>
+      </div>
+    </section>
+
+    <!-- Gallery Section -->
     <section
     id="gallery"
     ref="gallerySection"
@@ -465,5 +700,99 @@ html {
   transition: opacity 1s ease-out, transform 1s ease-out;
 }
 
+/* Enhanced Scrapbook Animations */
+.scrapbook-entry {
+  opacity: 0;
+  transform: scale(0.92) translateY(40px);
+  transition: all 1.2s cubic-bezier(0.4, 0, 0.2, 1);
+  perspective: 1000px;
+}
+
+.scrapbook-entry.is-visible {
+  opacity: 1;
+  transform: scale(1) translateY(0);
+}
+
+.entry-content {
+  opacity: 0;
+  transition: all 1s cubic-bezier(0.34, 1.56, 0.64, 1);
+}
+
+.entry-text {
+  transform: translateX(-30px) scale(0.9);
+}
+
+.entry-image {
+  transform: translateX(30px) scale(0.9) rotate(2deg);
+}
+
+.is-visible .entry-text {
+  opacity: 1;
+  transform: translateX(0) scale(1);
+  transition-delay: 0.2s;
+}
+
+.is-visible .entry-image {
+  opacity: 1;
+  transform: translateX(0) scale(1) rotate(0);
+  transition-delay: 0.4s;
+}
+
+/* Random delay classes */
+.delay-0 .entry-content {
+  transition-delay: 0.2s;
+}
+
+.delay-1 .entry-content {
+  transition-delay: 0.3s;
+}
+
+.delay-2 .entry-content {
+  transition-delay: 0.4s;
+}
+
+/* Hover effects */
+.entry-image img {
+  box-shadow: 0 10px 30px -10px rgba(0, 0, 0, 0.2);
+  transition: all 0.5s cubic-bezier(0.34, 1.56, 0.64, 1);
+}
+
+.entry-image img:hover {
+  transform: scale(1.05) translateY(-5px);
+  box-shadow: 0 20px 40px -15px rgba(0, 0, 0, 0.3);
+}
+
+/* Timeline line animation */
+.scrapbook-entry .absolute {
+  opacity: 0.4;
+  transition: opacity 0.5s ease;
+}
+
+.scrapbook-entry:hover .absolute {
+  opacity: 1;
+}
+
+/* Text hover effects */
+.prose h3 {
+  transition: color 0.3s ease;
+}
+
+.prose h3:hover {
+  color: #ec4899; /* pink-500 */
+}
+
+/* Ensure smooth visibility transition */
+.opacity-0 {
+  opacity: 0;
+}
+
+.opacity-100 {
+  opacity: 1;
+}
+
+/* Add smooth scroll behavior */
+html {
+  scroll-behavior: smooth;
+}
 
 </style>
