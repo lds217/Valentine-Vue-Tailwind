@@ -2,7 +2,7 @@
 <template>
   <section data-section class="h-screen flex flex-col items-center justify-center p-6  relative overflow-hidden">
     <div class="absolute inset-0 bg-cover bg-center opacity-20 bg-no-repeat z-0" 
-         :style="sectionStyle">
+         :style="{ backgroundImage: `url(${backgroundImage})`, transform: 'translate3d(0, 0, 0)' }">
     </div>
     
     <!-- Container to limit width and center content -->
@@ -37,26 +37,13 @@
 <script>
 import GitHubCalendar from 'github-calendar';
 import 'github-calendar/dist/github-calendar.css';
+import backgroundImage from '@/assets/img/bg11.jpg';
 
 export default {
   name: 'Timeline',
-  computed: {
-    sectionStyle() {
-      try {
-        // Relative path from src/components/utils/Timeline.vue to src/assets/img/bg11.jpg
-        const imageUrl = new URL('../../assets/img/bg11.jpg', import.meta.url).href;
-        return {
-          backgroundImage: `url('${imageUrl}')`,
-          transform: 'translate3d(0, 0, 0)' // Preserve existing transform
-        };
-      } catch (e) {
-        console.error("Error creating image URL for Timeline background:", e);
-        // Fallback style if image loading fails
-        return {
-          transform: 'translate3d(0, 0, 0)',
-          backgroundColor: '#fce7f3' // A light pink fallback color
-        };
-      }
+  data() {
+    return {
+      backgroundImage
     }
   },
   mounted() {
