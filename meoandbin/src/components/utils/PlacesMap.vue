@@ -283,7 +283,7 @@ onMounted(async () => {
 </script>
 
 <template>
-  <div data-section class="min-h-screen bg-pink-50 py-16 opacity-0 transform translate-y-10 transition-all duration-700 ease-out">
+  <div data-section class="min-h-screen py-16 opacity-0 transform translate-y-10 transition-all duration-700 ease-out">
     <div class="container mx-auto px-4">
       <div class="text-center mb-12">
         <h2 class="text-5xl font-bold text-pink-600 mb-4 hover:text-pink-500 transition-colors duration-300">🌍 Places We've Been 🌍</h2>
@@ -295,7 +295,7 @@ onMounted(async () => {
       <div class="flex flex-col md:flex-row gap-8 items-start">
         <!-- Vietnam Map Section -->
         <div id="vietnamMapContainer" class="map-container md:w-1/2 bg-white p-6 rounded-xl shadow-2xl transform transition-all duration-1000 ease-out hover:shadow-pink-200/50">
-          <h3 class="text-3xl font-semibold text-pink-500 mb-6 text-center">Adventures in Vietnam 🇻🇳</h3>
+          <h3 class="text-3xl font-semibold text-pink-500 mb-6 text-center">Adventures in Vietnam</h3>
           <div id="vietnamMap" class="h-96 md:h-[600px] rounded-lg shadow-inner"></div>
           <p class="text-center text-gray-500 mt-4 text-sm">
             Exploring the vibrant culture and beautiful landscapes of Vietnam.
@@ -304,7 +304,7 @@ onMounted(async () => {
 
         <!-- US Map Section -->
         <div id="usMapContainer" class="map-container md:w-1/2 bg-white p-6 rounded-xl shadow-2xl transform transition-all duration-1000 ease-out hover:shadow-blue-200/50">
-          <h3 class="text-3xl font-semibold text-blue-500 mb-6 text-center">Journeys in the USA 🇺🇸</h3>
+          <h3 class="text-3xl font-semibold text-blue-500 mb-6 text-center">Journeys in the USA</h3>
           <div id="usMap" class="h-96 md:h-[600px] rounded-lg shadow-inner"></div>
            <p class="text-center text-gray-500 mt-4 text-sm">
             Discovering new horizons and creating memories across the United States.
